@@ -22,6 +22,7 @@ baby.html files:
 <tr align="right"><td>3</td><td>Matthew</td><td>Brittany</td>
 ...
 
+
 Suggested milestones for incremental development:
  - Extract all the text from the file and print it
  - Find and extract the year and print it
@@ -30,6 +31,7 @@ Suggested milestones for incremental development:
  - Build the [year, 'name rank', ... ] list and print it
  - Fix main() to use the extracted_names list
 """
+__author__ = "Erica best aka purplecoder04 and study hall"
 
 import sys
 import re
@@ -44,8 +46,19 @@ def extract_names(filename):
     ['2006', 'Aaliyah 91', 'Aaron 57', 'Abagail 895', ...]
     """
     names = []
-    # +++your code here+++
-    return names
+    di_names = {}
+    with open(filename) as file:
+        babyn = file.read()
+        year = re.search(r'Popularity\sin\s(\d\d\d\d)', babyn)
+        names.append(year.group(1))
+        nam = re.findall(r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', babyn)
+        for num, boy, girl in nam:
+            di_names.setdefault(boy, []).append(num)
+            di_names.setdefault(girl, []).append(num)
+        sorted_name = sorted(di_names.keys())
+        for name in sorted_name:
+            names.append(name + " " + di_names[name][0])
+        return names
 
 
 def create_parser():
@@ -82,7 +95,14 @@ def main(args):
     # Use the create_summary flag to decide whether to print the list
     # or to write the list to a summary file (e.g. `baby1990.html.summary`).
 
-    # +++your code here+++
+    for f in file_list:
+        list_of_names = extract_names(f)
+        new_list = "\n".join(list_of_names)
+        if create_summary:
+            with open(f + ".summary", "w") as filename:
+                filename.write(new_list)
+        else:
+            print(new_list)
 
 
 if __name__ == '__main__':
